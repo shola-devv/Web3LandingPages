@@ -22,7 +22,7 @@ export default function Header() {
           <div className="flex items-center">
             <Link href="/" className="text-xl font-bold font-mono text-purple-400 flex items-center hover:glow-text">
               <Sparkles className="mr-2" />
-              DIVAFlex
+              <p>LangAgent</p>
             </Link>
           </div>
           <nav>
