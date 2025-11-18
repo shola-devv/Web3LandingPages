@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { createWalletClient, custom, parseEther } from 'viem';
 import { sepolia } from 'viem/chains';
-import Image from 'next/Image' 
+import Image from 'next/image' 
 
 export default function EmmanuelCoinLanding() {
   const [walletAddress, setWalletAddress] = useState('');
