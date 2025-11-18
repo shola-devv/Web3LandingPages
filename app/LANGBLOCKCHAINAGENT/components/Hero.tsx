@@ -1,9 +1,9 @@
 'use client'
 
 import { Sparkles } from 'lucide-react'
-import dynamic from 'next/dynamic'
+
 import Image from 'next/image'
-const CodeHologram = dynamic(() => import('./CodeHologram'), { ssr: false })
+
 
 export default function Hero() {
   return (
