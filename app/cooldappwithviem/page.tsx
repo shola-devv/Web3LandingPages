@@ -32,15 +32,16 @@ export default function MoodDapp() {
     }
   ];
 
-  let walletClient: any;
-  let MoodContractInstance: any;
+  let walletClient: ReturnType<typeof createWalletClient> | undefined;
+  let MoodContractInstance: ReturnType<typeof getContract> | undefined;
 
   async function connectWallet() {
     setIsConnecting(true);
     setStatus("");
     
     try {
-      if (!(window as any).ethereum) {
+      const ethereum = (window as unknown as { ethereum?: any }).ethereum;
+      if (!ethereum) {
         setStatus("Please install MetaMask to continue!");
         setIsConnecting(false);
         return;
@@ -48,7 +49,7 @@ export default function MoodDapp() {
 
       walletClient = createWalletClient({
         chain: sepolia,
-        transport: custom((window as any).ethereum),
+        transport: custom(ethereum),
       });
 
       const accounts = await walletClient.requestAddresses();
@@ -73,9 +74,10 @@ export default function MoodDapp() {
       await connectWallet();
     }
     if (!MoodContractInstance) {
+      const ethereum = (window as unknown as { ethereum?: any }).ethereum;
       walletClient = createWalletClient({
         chain: sepolia,
-        transport: custom((window as any).ethereum),
+        transport: custom(ethereum),
       });
 
       MoodContractInstance = getContract({
