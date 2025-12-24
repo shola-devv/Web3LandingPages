@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
 import { createWalletClient, custom, getContract } from 'viem';
+
 import { sepolia } from 'viem/chains';
 
 export default function MoodDapp() {
@@ -33,14 +34,14 @@ export default function MoodDapp() {
   ];
 
   let walletClient: ReturnType<typeof createWalletClient> | undefined;
-  let MoodContractInstance: ReturnType<typeof getContract> | undefined;
+  let MoodContractInstance: any | undefined;
 
   async function connectWallet() {
     setIsConnecting(true);
     setStatus("");
     
     try {
-      const ethereum = (window as unknown as { ethereum?: any }).ethereum;
+      const ethereum = window.ethereum;
       if (!ethereum) {
         setStatus("Please install MetaMask to continue!");
         setIsConnecting(false);
@@ -69,12 +70,15 @@ export default function MoodDapp() {
     }
   }
 
-  async function initContract() {
+  async function initContract(): Promise<any> {
     if (!walletClient) {
       await connectWallet();
     }
     if (!MoodContractInstance) {
-      const ethereum = (window as unknown as { ethereum?: any }).ethereum;
+      const ethereum = window.ethereum;
+      if (!ethereum) {
+        throw new Error('Please install MetaMask to continue!');
+      }
       walletClient = createWalletClient({
         chain: sepolia,
         transport: custom(ethereum),
@@ -99,8 +103,8 @@ export default function MoodDapp() {
     setStatus("Fetching your mood...");
     
     try {
-      const contract = await initContract();
-      const moodValue = await contract.read.getMood();
+      const contract = await initContract() as any;
+      const moodValue = (await contract.read.getMood()) as string;
       setCurrentMood(moodValue);
       setStatus("Mood retrieved successfully! 🎉");
     } catch (err) {
@@ -126,7 +130,7 @@ export default function MoodDapp() {
     setStatus("Setting your mood on the blockchain...");
     
     try {
-      const contract = await initContract();
+      const contract = await initContract() as any;
       await contract.write.setMood([mood], {
         account: address as `0x${string}`,
       });

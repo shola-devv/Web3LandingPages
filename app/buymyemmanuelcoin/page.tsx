@@ -17,13 +17,14 @@ export default function EmmanuelCoinLanding() {
     setStatus('');
     
     try {
-      if (!window.ethereum) {
+      const ethereum = window.ethereum;
+      if (!ethereum) {
         setStatus('Please install MetaMask to continue!');
         setIsConnecting(false);
         return;
       }
 
-      const accounts = await window.ethereum.request({ 
+      const accounts = await ethereum.request({ 
         method: 'eth_requestAccounts' 
       });
       
@@ -52,14 +53,21 @@ export default function EmmanuelCoinLanding() {
     setStatus('Processing transaction...');
 
     try {
+      const ethereum = window.ethereum;
+      if (!ethereum) {
+        setStatus('Please install MetaMask to continue!');
+        setIsBuying(false);
+        return;
+      }
+
       const walletClient = createWalletClient({
         chain: sepolia,
-        transport: custom(window.ethereum)
+        transport: custom(ethereum)
       });
 
       const hash = await walletClient.sendTransaction({
-        account: walletAddress,
-        to: recipientAddress,
+        account: walletAddress as `0x${string}`,
+        to: recipientAddress as `0x${string}`,
         value: parseEther(amount)
       });
 
