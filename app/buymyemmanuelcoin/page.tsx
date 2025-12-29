@@ -247,7 +247,7 @@ export default function EmmanuelCoinLanding() {
       <div className="bg-white py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">
-            Can't See Your Emmanuel Coins?
+           Youve been sent 1 Emmanuelcoin, Can't See Your Emmanuel Coins?
           </h2>
           <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto">
             Follow these simple steps to add Emmanuel Coin to your MetaMask wallet

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "react": "19.1.0",
@@ -27,5 +28,13 @@
     "eslint-config-next": "15.5.3",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
