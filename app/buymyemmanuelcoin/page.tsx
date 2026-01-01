@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { createWalletClient, custom, parseEther } from 'viem';
 import { sepolia } from 'viem/chains';
 import Image from 'next/image' 
+import emmanuelcoinAbi from "@/artifacts/Emmanuelcoin.abi.json";
 
 export default function EmmanuelCoinLanding() {
   const [walletAddress, setWalletAddress] = useState('');
@@ -12,6 +13,7 @@ export default function EmmanuelCoinLanding() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isBuying, setIsBuying] = useState(false);
 
+  const CONTRACT_ADDRESS = "0xD24c00b7a90b2e8Db9Bf28e4F3b55375d9968C3c";
   const connectWallet = async () => {
     setIsConnecting(true);
     setStatus('');
@@ -38,48 +40,44 @@ export default function EmmanuelCoinLanding() {
     }
   };
 
-  const buyCoin = async () => {
-    if (!walletAddress) {
-      setStatus('Please connect your wallet first!');
+ 
+const buyCoin = async () => {
+  if (!walletAddress) {
+    setStatus("Please connect your wallet first!");
+    return;
+  }
+
+  setIsBuying(true);
+  setStatus("Calling contract...");
+
+  try {
+    const ethereum = window.ethereum;
+    if (!ethereum) {
+      setStatus("Please install MetaMask!");
       return;
     }
-    
-    if (!recipientAddress || !amount) {
-      setStatus('Please enter a recipient address and amount!');
-      return;
-    }
 
-    setIsBuying(true);
-    setStatus('Processing transaction...');
+    const walletClient = createWalletClient({
+      account: walletAddress as `0x${string}`,
+      chain: sepolia,
+      transport: custom(ethereum),
+    });
 
-    try {
-      const ethereum = window.ethereum;
-      if (!ethereum) {
-        setStatus('Please install MetaMask to continue!');
-        setIsBuying(false);
-        return;
-      }
+    const hash = await walletClient.writeContract({
+      address: CONTRACT_ADDRESS,
+      abi: emmanuelcoinAbi,
+      functionName: "withdrawCoinShare",
+    });
 
-      const walletClient = createWalletClient({
-        chain: sepolia,
-        transport: custom(ethereum)
-      });
+    setStatus(`Success! Tx: ${hash.slice(0, 10)}... 🎉`);
+  } catch (error) {
+    console.error(error);
+    setStatus("Transaction failed.");
+  } finally {
+    setIsBuying(false);
+  }
+};
 
-      const hash = await walletClient.sendTransaction({
-        account: walletAddress as `0x${string}`,
-        to: recipientAddress as `0x${string}`,
-        value: parseEther(amount)
-      });
-
-      setStatus(`Success! Transaction hash: ${hash.slice(0, 10)}...${hash.slice(-8)} 🎉`);
-      setAmount('');
-    } catch (error) {
-      setStatus('Transaction failed. Please try again.');
-      console.error(error);
-    } finally {
-      setIsBuying(false);
-    }
-  };
 
   return (
     <>
@@ -197,19 +195,6 @@ export default function EmmanuelCoinLanding() {
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
-                  Recipient Address:
-                </label>
-                <input
-                  type="text"
-                  placeholder="0x..."
-                  value={recipientAddress}
-                  onChange={(e) => setRecipientAddress(e.target.value)}
-                  className="border px-3 py-2 rounded w-full"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
                   Amount (ETH):
                 </label>
                 <input
@@ -227,7 +212,7 @@ export default function EmmanuelCoinLanding() {
               disabled={isBuying || !walletAddress}
               className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isBuying ? 'Processing...' : '💰 Buy Emmanuel Coin Now'}
+              {isBuying ? 'Processing...' : '💰 Buy Emmanuel Coin Now (free today)'}
             </button>
 
             {status && (
@@ -276,7 +261,7 @@ export default function EmmanuelCoinLanding() {
                 <h3 className="text-xl font-bold mb-2 text-gray-800">Enter Token Contract Address</h3>
                 <p className="text-gray-600 mb-3">Click on "Custom token" and paste the Emmanuel Coin contract address:</p>
                 <div className="bg-white border-2 border-orange-300 p-3 rounded font-mono text-sm break-all">
-                  0xYourContractAddressHere
+                  0xD24c00b7a90b2e8Db9Bf28e4F3b55375d9968C3c
                 </div>
               </div>
             </div>
@@ -342,7 +327,7 @@ export default function EmmanuelCoinLanding() {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="bg-white text-orange-600 px-10 py-4 rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all shadow-xl"
           >
-            Buy Emmanuel Coin Now
+            claim EmmanuelCoin for free Now
           </button>
         </div>
       </div>

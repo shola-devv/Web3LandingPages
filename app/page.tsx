@@ -7,7 +7,7 @@ export default function HomePage() {
       <div className="w-full max-w-2xl">
         <div className="flex flex-col gap-3 sm:gap-4">
           <p className="text-sm sm:text-base md:text-lg text-center px-2">
-            PROJECTS DEPLOYED ON BLOCKCHAIN ARE STARED *, They might require testnet or mainnet transactions
+            PROJECTS DEPLOYED ON BLOCKCHAIN ARE STARRED *, They might require testnet or mainnet transactions
           </p>
           <Link 
             href="/LangBlockchainAgent" 
